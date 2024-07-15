@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const ArticleList = ({ props }) => {
   const [data, setData] = useState(null);
@@ -13,11 +13,9 @@ const ArticleList = ({ props }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `https://content.guardianapis.com/search?section=${props}&show-fields=thumbnail&page-size=12&api-key=test`
-        );
+        const response = await fetch(`https://content.guardianapis.com/search?section=${props}&show-fields=thumbnail&page-size=16&api-key=test`);
         if (!response.ok) {
-          throw new Error('Netzwerkantwort war nicht ok');
+          throw new Error("Netzwerkantwort war nicht ok");
         }
         const result = await response.json();
         setData(result);
@@ -33,7 +31,7 @@ const ArticleList = ({ props }) => {
   }, [props]);
 
   if (loading) {
-    return <div>Laden...</div>;
+    return <SkeletonList />;
   }
 
   if (error) {
@@ -43,19 +41,15 @@ const ArticleList = ({ props }) => {
   //console.log(data.response.results);
 
   return (
-    <div>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-3">
+    <div className="my-16 font-[lato] ">
+      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-[1200px] m-auto">
         {data.response.results.map((tag) => (
           <li key={tag.id}>
             <Link to={`/article/${tag.id}`}>
-              <div className="max-w-sm rounded overflow-hidden shadow-lg">
-                <img
-                  className="w-full"
-                  src={tag.fields.thumbnail}
-                  alt=""
-                />
+              <div className="max-w-sm rounded shadow-lg h-72 my-2 rounded-t-xl">
+                <img className="w-full rounded-t-xl" src={tag.fields.thumbnail} alt="" />
                 <div className="px-6 py-4">
-                  <p className="text-gray-700 text-base">{tag.webTitle} </p>
+                  <p className="text-base font-semibold text-center overflow-hidden">{tag.webTitle} </p>
                 </div>
               </div>
             </Link>
@@ -67,3 +61,35 @@ const ArticleList = ({ props }) => {
 };
 
 export default ArticleList;
+
+const SkeletonItem = () => {
+  return (
+    <div className="flex w-72 flex-col gap-4">
+      <div className="skeleton h-32 w-full"></div>
+      <div className="skeleton h-4 w-28"></div>
+      <div className="skeleton h-4 w-full"></div>
+      <div className="skeleton h-4 w-full"></div>
+    </div>
+  );
+};
+
+const SkeletonList = () => {
+  return (
+    <div className="max-w-[1200px] m-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 my-16 ">
+        <SkeletonItem />
+        <SkeletonItem />
+        <SkeletonItem />
+        <SkeletonItem />
+        <SkeletonItem />
+        <SkeletonItem />
+        <SkeletonItem />
+        <SkeletonItem />
+        <SkeletonItem />
+        <SkeletonItem />
+        <SkeletonItem />
+        <SkeletonItem />
+      </div>
+    </div>
+  );
+};
